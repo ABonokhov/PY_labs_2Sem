@@ -1,26 +1,17 @@
-"""
-С сайта https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases
-собрать статистику по заболеваемости, выздоровлению и смертям
-Скрипт выводит график по выбранной стране(странам) и выбранной категории(заболели, выздоровели, умерли)
-страну выбрать на усмотрение, или из списка или с помощью ввода
-Также реализовать вывод  не не только абсолютных значений, но и прирост
-Скрипт можно использовать и этот (здесь статистика из другого сайта и в другой форме),
-но желательно написать свой
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.dates import DateFormatter
 import random
 
-# Section 2 - Loading and Selecting Data
-options = {1: "deaths", 2: "confirmed", 3: "recovered"}
-
+options = {
+    1: "deaths",
+    2: "confirmed",
+    3: "recovered"
+}
 print("Choose option: ")
 for opt in options.items():
-    print('{} - {}'.format(opt[0], opt[1]))
-
+    print('{} : {}'.format(opt[1], opt[0]))
 option = options[int(input())]
 print("Wait a bit, Sergei Ivanovich..")
 
@@ -33,13 +24,8 @@ country = [input()]
 country_column = country[0]
 variants = variants[variants['Province/State'].isnull()]
 variants = variants[variants['Country/Region'].isin(country)]
-values = variants.pivot(index='Date', columns=['Country/Region'], values='Value')
-print(variants)
+values = variants.pivot (index='Date', columns=['Country/Region'], values='Value')
 
-#color_list = ["orange", "pink", "red", "blue", "pink", "purple", "virgin", 'green', 'brown']
-#for i in range(country):
-   # print(random.choice(color_list))
-    #plt.style.use('fivethirtyeight')
 
 dates = values.index.tolist()
 values2 = values.copy()
@@ -49,21 +35,27 @@ for i in range(len(dates)):
     else:
         values2.loc[dates[i], country_column] = values.loc[dates[i], country_column] - values.loc[
             dates[i - 1], country_column]
-print(variants)
 
-plt.style.use('fivethirtyeight')
+
+
+def random_color():
+     rand = lambda: random.randint(100, 255)
+     return '#%02X%02X%02X' % (rand(), rand(), rand())
+
+plt.style.use('ggplot')
 plot = values.plot(figsize=(12, 8), linewidth=5, legend=False)
 plot.legend(prop={'size': 6})
-plot.grid(color='#560319')
+plot.grid(random_color())
 plot.set_xlabel('Date')
-plot.set_ylabel('# of Cases')
+plot.set_ylabel('Absolute value of Cases') # абсолютное значение случаев
 
 
-plot2 = values2.plot(figsize=(14, 10), linewidth=7, legend=True)
+
+plot2 = values2.plot(figsize=(12, 5), linewidth=7, legend=True)
 plot2.legend(prop={'size': 8})
-plot2.grid(color='#560319')
+plot2.grid(random_color())
 plot2.set_xlabel('Date')
-plot2.set_ylabel('# of Cases')
+plot2.set_ylabel('Increase of Cases') # прирост случаев
 
 
 plt.show()
