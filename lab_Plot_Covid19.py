@@ -24,7 +24,7 @@ country = [input()]
 country_column = country[0]
 variants = variants[variants['Province/State'].isnull()]
 variants = variants[variants['Country/Region'].isin(country)]
-values = variants.pivot (index='Date', columns=['Country/Region'], values='Value')
+values = variants.pivot(index='Date', columns=['Country/Region'], values='Value')
 
 
 dates = values.index.tolist()
@@ -43,11 +43,11 @@ def random_color():
      return '#%02X%02X%02X' % (rand(), rand(), rand())
 
 plt.style.use('ggplot')
-plot = values.plot(figsize=(12, 8), linewidth=5, legend=False)
+plot = values.plot(figsize=(12, 8), linewidth=5, legend=False, color=random_color())
 plot.legend(prop={'size': 6})
-plot.grid(random_color())
+plot.grid()
 plot.set_xlabel('Date')
-plot.set_ylabel('Absolute value of Cases') # абсолютное значение случаев
+plot.set_ylabel('Absolute value of Cases' + country[0]) # абсолютное значение случаев
 
 
 
@@ -55,7 +55,7 @@ plot2 = values2.plot(figsize=(12, 5), linewidth=7, legend=True)
 plot2.legend(prop={'size': 8})
 plot2.grid(random_color())
 plot2.set_xlabel('Date')
-plot2.set_ylabel('Increase of Cases') # прирост случаев
+plot2.set_ylabel('Increase of Cases ' + country[0]) # прирост случаев
 
 
 plt.show()
